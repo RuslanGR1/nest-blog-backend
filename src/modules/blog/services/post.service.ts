@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
+
 import { UserService } from 'modules/user/services/user.service';
-import { CreatePostDto } from '../dto/create-post.dto';
-import { UpdatePostDto } from '../dto/update-post.dto';
+import { CreatePostDto, UpdatePostDto } from '../dto';
 import { PostRepository } from '../repositories/post.repository';
 
 @Injectable()
@@ -26,7 +26,7 @@ export class PostService {
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} post`;
+    return this.postRepository.findOneBy({ id });
   }
 
   update(id: number, updatePostDto: UpdatePostDto) {

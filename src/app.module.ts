@@ -7,7 +7,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
 
 import { UserEntity } from './modules/user/entities/user.entity';
-import { PostEntiry } from 'modules/blog/entities/post.entity';
+import { PostEntity } from 'modules/blog/entities/post.entity';
 
 @Module({
   imports: [
@@ -21,7 +21,7 @@ import { PostEntiry } from 'modules/blog/entities/post.entity';
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
-      entities: [UserEntity, PostEntiry],
+      entities: [UserEntity, PostEntity],
       synchronize: true,
     }),
     BlogModule,

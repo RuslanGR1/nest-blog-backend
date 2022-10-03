@@ -11,7 +11,7 @@ import {
 import { UserEntity } from 'modules/user/entities/user.entity';
 
 @Entity('post')
-export class PostEntiry {
+export class PostEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
