@@ -6,18 +6,25 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { PostService } from '../services/post.service';
 import { CreatePostDto } from '../dto/create-post.dto';
 import { UpdatePostDto } from '../dto/update-post.dto';
+import { AtGuard } from 'modules/auth/guards';
+import { GetCurrentUserId } from 'common/decorators';
 
-@Controller('api/v1')
+@Controller('api/v1/posts')
 export class PostController {
   constructor(private readonly postService: PostService) {}
 
   @Post()
-  create(@Body() createPostDto: CreatePostDto) {
-    return this.postService.create(createPostDto);
+  @UseGuards(AtGuard)
+  create(
+    @Body() createPostDto: CreatePostDto,
+    @GetCurrentUserId() userId: number,
+  ) {
+    return this.postService.create(createPostDto, userId);
   }
 
   @Get()

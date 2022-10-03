@@ -1,15 +1,28 @@
 import { Injectable } from '@nestjs/common';
+import { UserService } from 'modules/user/services/user.service';
 import { CreatePostDto } from '../dto/create-post.dto';
 import { UpdatePostDto } from '../dto/update-post.dto';
+import { PostRepository } from '../repositories/post.repository';
 
 @Injectable()
 export class PostService {
-  create(createPostDto: CreatePostDto) {
-    return 'This action adds a new post';
+  constructor(
+    private readonly postRepository: PostRepository,
+    private readonly userService: UserService,
+  ) {}
+
+  async create(createPostDto: CreatePostDto, userId: number) {
+    const user = await this.userService.getUserById(userId);
+    const post = this.postRepository.create({
+      ...createPostDto,
+      author: user,
+    });
+    const savedPost = await this.postRepository.save(post);
+    return savedPost;
   }
 
   findAll() {
-    return `This action returns all post`;
+    return this.postRepository.find();
   }
 
   findOne(id: number) {
