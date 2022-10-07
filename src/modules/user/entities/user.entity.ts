@@ -4,28 +4,40 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
   CreateDateColumn,
+  OneToMany,
 } from 'typeorm';
+
+import { ROLE } from 'common/const/roles';
+import { PostEntity } from 'modules/blog/entities';
 
 @Entity('user')
 export class UserEntity {
   @PrimaryGeneratedColumn()
-  id: number;
+  public id: number;
 
   @Column()
-  username: string;
+  public username: string;
+
+  @Column({
+    default: ROLE.MEMBER,
+  })
+  public role: string;
+
+  @OneToMany(() => PostEntity, (post) => post.author)
+  public posts: PostEntity[];
 
   @Column()
-  passwordHash: string;
+  public passwordHash: string;
 
-  @Column()
-  passwordSalt: string;
+  @Column({ select: false })
+  public passwordSalt: string;
 
   @Column({ nullable: true })
-  refreshTokenHash?: string;
+  public refreshTokenHash?: string;
 
   @CreateDateColumn()
-  created: Date;
+  public created: Date;
 
   @UpdateDateColumn()
-  updated: Date;
+  public updated: Date;
 }

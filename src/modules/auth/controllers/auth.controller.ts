@@ -76,7 +76,6 @@ export class AuthController {
 
   @Post('login')
   @HttpCode(HttpStatus.OK)
-  @UseGuards(LocalAuthGuard)
   login(@Body() createUserDto: CreateUserDto) {
     /**
      * User provides credentials

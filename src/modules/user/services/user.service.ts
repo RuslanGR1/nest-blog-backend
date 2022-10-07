@@ -3,10 +3,9 @@ import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 
-import { CreateUserDto } from '../dto/create-user.dto';
-import { ValidateUserDto } from '../dto/validate-user.dto';
-import { UserEntity } from '../entities/user.entity';
-import { UserRepository } from '../repositories/user.repository';
+import { ValidateUserDto, CreateUserDto } from '../dto';
+import { UserEntity } from '../entities';
+import { UserRepository } from '../repositories';
 import { TTokens, TJWTPayload } from 'modules/auth/types';
 
 @Injectable()
@@ -101,10 +100,9 @@ export class UserService {
       id: userId,
     });
     if (!user) throw new ForbiddenException('Access denied');
-    
+
     // change hardcode rounds
     const refreshTokenHash = await bcrypt.hash(refresh_token, 10);
-    console.log('updateRefreshTokenHash', refresh_token, refreshTokenHash);
     await this.userRepository.update(userId, { refreshTokenHash });
   }
 

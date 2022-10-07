@@ -5,31 +5,40 @@ import {
   CreateDateColumn,
   ManyToOne,
   Entity,
-  JoinColumn,
+  BeforeUpdate,
+  BeforeInsert,
+  BaseEntity,
 } from 'typeorm';
 
 import { UserEntity } from 'modules/user/entities/user.entity';
 
 @Entity('post')
-export class PostEntity {
+export class PostEntity extends BaseEntity {
   @PrimaryGeneratedColumn()
-  id: number;
+  public id: number;
 
   @Column()
-  title: string;
+  public title: string;
 
   @Column()
-  text: string;
+  public text: string;
 
   @Column({ nullable: true })
-  slug?: string;
+  public slug?: string;
 
-  @ManyToOne(() => UserEntity)
-  author: UserEntity;
+  @ManyToOne(() => UserEntity, (author) => author.posts)
+  public author: UserEntity;
 
   @CreateDateColumn()
-  created: Date;
+  public created: Date;
 
   @UpdateDateColumn()
-  updated: Date;
+  public updated: Date;
+
+  @BeforeInsert()
+  @BeforeUpdate()
+  private validate(): void {
+    this.slug = 'dsdsdsd';
+    console.log('before insert', this.title);
+  }
 }

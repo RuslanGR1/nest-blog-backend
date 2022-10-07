@@ -2,7 +2,8 @@ import { Injectable } from '@nestjs/common';
 
 import { UserService } from 'modules/user/services/user.service';
 import { CreatePostDto, UpdatePostDto } from '../dto';
-import { PostRepository } from '../repositories/post.repository';
+import { PostEntity } from '../entities';
+import { PostRepository } from '../repositories';
 
 @Injectable()
 export class PostService {
@@ -21,11 +22,11 @@ export class PostService {
     return savedPost;
   }
 
-  findAll() {
+  findAll(): Promise<PostEntity[]> {
     return this.postRepository.find();
   }
 
-  findOne(id: number) {
+  findOne(id: number): Promise<PostEntity> {
     return this.postRepository.findOneBy({ id });
   }
 
