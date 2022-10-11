@@ -6,15 +6,16 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
+import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 
 import { GetCurrentUser, GetCurrentUserId } from 'common/decorators';
 
-import { LocalAuthGuard } from '../guards/local-auth.guard';
 import { CreateUserDto } from 'modules/user/dto/create-user.dto';
 import { UserService } from 'modules/user/services/user.service';
 import { AuthService } from '../services/auth.service';
 import { AtGuard, RtGuard } from '../guards';
 
+@ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   constructor(
@@ -24,6 +25,9 @@ export class AuthController {
 
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
+  @ApiCreatedResponse({
+    description: 'Registration successfully completed!',
+  })
   register(@Body() createUserDto: CreateUserDto) {
     /**
      * Create new user usin username and password

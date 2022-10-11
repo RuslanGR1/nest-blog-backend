@@ -29,7 +29,7 @@ export class UserEntity {
   @Column()
   public passwordHash: string;
 
-  @Column({ select: false })
+  @Column()
   public passwordSalt: string;
 
   @Column({ nullable: true })

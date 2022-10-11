@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
@@ -10,6 +10,8 @@ import { TTokens, TJWTPayload } from 'modules/auth/types';
 
 @Injectable()
 export class UserService {
+  public logger = new Logger('UserService');
+
   constructor(
     private readonly userRepository: UserRepository,
     private readonly jwtService: JwtService,
@@ -37,17 +39,23 @@ export class UserService {
     });
   }
 
-  async validateUser(validateUserDto: ValidateUserDto) {
+  async validateUser(
+    validateUserDto: ValidateUserDto,
+  ): Promise<UserEntity> | null {
     const user = await this.userRepository.findOneBy({
       username: validateUserDto.username,
     });
 
+    if (!user) return null;
+
+    this.logger.log(`User logged in with username ` + user.username);
     try {
-      const isPasswordMatch: boolean = await bcrypt.compare(
+      const isPasswordMatch: boolean = await this.compareHash(
         validateUserDto.password,
+        user.passwordSalt,
         user.passwordHash,
       );
-
+      this.logger.debug('isPasswordMatch ' + isPasswordMatch);
       if (isPasswordMatch) {
         user.passwordHash = undefined;
         user.passwordSalt = undefined;
@@ -57,7 +65,7 @@ export class UserService {
         return null;
       }
     } catch (err) {
-      console.log(err);
+      this.logger.error(err, err.stack);
     }
   }
 
@@ -117,6 +125,16 @@ export class UserService {
     });
 
     return accessToken;
+  }
+
+  async compareHash(
+    rawString: string,
+    salt: string,
+    hashedString: string,
+  ): Promise<boolean> {
+    this.logger.debug(rawString, salt, hashedString);
+    const hash = await bcrypt.hash(rawString, salt);
+    return hash === hashedString;
   }
 
   async genTokens(userId: number, username: string): Promise<TTokens> {

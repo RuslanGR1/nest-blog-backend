@@ -1,5 +1,5 @@
 import * as bcrypt from 'bcrypt';
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable, Logger } from '@nestjs/common';
 
 import { ValidateUserDto } from '../dto';
 import { CreateUserDto } from 'modules/user/dto/create-user.dto';
@@ -8,6 +8,8 @@ import { TTokens } from '../types/tokens.type';
 
 @Injectable()
 export class AuthService {
+  public logger = new Logger('AuthService');
+
   constructor(private readonly userService: UserService) {}
 
   async validateUser(user: ValidateUserDto) {
@@ -16,7 +18,8 @@ export class AuthService {
 
   async login(userDto: ValidateUserDto): Promise<TTokens> {
     const user = await this.userService.validateUser(userDto);
-    if (!user) throw new ForbiddenException('');
+    if (!user) throw new ForbiddenException('No user found');
+
     const tokens = await this.userService.genTokens(user.id, user.username);
     await this.userService.updateRefreshTokenHash(
       user.id,

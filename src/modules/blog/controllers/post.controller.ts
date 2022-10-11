@@ -9,6 +9,7 @@ import {
   UseGuards,
   NotFoundException,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 
 import { PostEntity } from '../entities/post.entity';
 import { PostService } from '../services/post.service';
@@ -19,6 +20,7 @@ import { GetCurrentUserId } from 'common/decorators';
 import { Roles } from 'common/decorators';
 import { RolesGuard } from 'common/guards/roles.guard';
 
+@ApiTags('post')
 @Controller('api/v1/posts')
 @UseGuards(AtGuard)
 export class PostController {

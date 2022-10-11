@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 
 import { UserService } from 'modules/user/services/user.service';
 import { CreatePostDto, UpdatePostDto } from '../dto';
@@ -7,6 +7,8 @@ import { PostRepository } from '../repositories';
 
 @Injectable()
 export class PostService {
+  public logger = new Logger('PostService');
+
   constructor(
     private readonly postRepository: PostRepository,
     private readonly userService: UserService,
